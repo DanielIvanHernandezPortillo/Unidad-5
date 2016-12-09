@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+
+<h:head></h:head>
+<body>
+	<h1>Customer</h1>
+
+	<h:form id="frmCustomer">
+		Name:<h:inputText value="#{customerController.customer.name}" />
+		Contact type: <h:selectOneMenu id="selContactType" 
+		value="#{customerController.contact.contactType}"
+		converter="#{contactTypeConverter}">
+			<f:selectItem noSelectionOption="true" itemValue="" itemLabel=".:Select one:."/>
+			<f:selectItems value="#{contactTypeController.contactTypes}" var="contactType"
+			itemLabel="#{contactType.description}"/>
+			
+		</h:selectOneMenu>
+		
+		
+		Contact:<h:inputText
+		value="#{customerController.contact.description}"
+			id="txtContact"/>
+		<h:commandButton action="#{customerController.addContact()}" value="+">
+		<f:ajax execute="selContactType txtContact" render="txtContact dtContacts"></f:ajax>
+		</h:commandButton>
+		<h:dataTable border="1" id="dtContacts"
+			value="#{customerController.customer.contacts}" var="contact">
+			<h:column>
+				#{contact.contactType.description}
+			</h:column>
+			<h:column>
+				#{contact.description}
+			</h:column>
+			<h:column>
+				<h:commandButton
+					action="#{customerController.removeContact(contact)}" value="-">
+				<f:ajax render="frmCustomer:dtContacts"></f:ajax>
+				</h:commandButton>
+			
+			</h:column>
+
+
+		</h:dataTable>
+		State:<h:selectOneMenu value="#{customerController.customer.state}"
+			converter="#{stateConverter}">
+			<f:selectItem noSelectionOption="true" itemValue=""
+				itemLabel=".:Select one:." />
+			<f:selectItems value="#{stateController.states}" var="state"
+				itemLabel="#{state.name}" />
+		</h:selectOneMenu>
+		<h:commandButton action="#{customerController.save}" value="Save">
+			<f:ajax execute="frmCustomer" render="frmCustomer" />
+		</h:commandButton>
+
+
+		<h:commandButton rendered="#{customerController.editMode}"
+			action="#{customerController.save}" value="Cancel">
+			<f:ajax render="frmCustomer"></f:ajax>
+		</h:commandButton>
+
+
+
+		<h:dataTable value="#{customerController.customers}" var="c"
+			id="dtCustomer">
+			<h:column>
+				<f:facet name="header">ID</f:facet>
+				#{c.id}
+			</h:column>
+			<h:column>
+				<f:facet name="header">Name</f:facet>
+				#{c.name}
+			</h:column>
+			
+			<h:column>
+				<f:facet name="header">State</f:facet>
+				#{c.state.name}
+			</h:column>
+ 
+			<h:column>
+				<f:facet name="header">Actions</f:facet>
+				<h:commandButton action="#{customerController.delete(c)}"
+					value="Delete"
+					onclick="return window.confirm
+						('Are you sure?')">
+					<f:ajax render="frmCustomer:dtCustomer" />
+				</h:commandButton>
+				<h:commandButton action="#{customerController.update(c)}"
+					value="Update">
+					<f:ajax render="frmCustomer" />
+				</h:commandButton>
+
+
+
+			</h:column>
+		</h:dataTable>
+	</h:form>
+
+</body>
+</html>

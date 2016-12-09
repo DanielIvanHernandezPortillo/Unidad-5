@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"> 
+
+<h:head></h:head> 
+<body> 
+	<h1>Game</h1>
+	
+	<h:form id="frmGame">
+		Name:<h:inputText 
+		value="#{gameController.game.name}" />
+		Cost:<h:inputText 
+		value="#{gameController.game.cost}" />
+		Platform:<h:inputText 
+		value="#{gameController.game.platform}" />
+		
+		<h:commandButton action="#{gameController.save}" 
+		value="Save">
+		<f:ajax execute="frmGame" render="dtGame" />
+		</h:commandButton>
+		
+		<h:commandButton rendered="#{gameController.editMode}"
+				action="#{gameController.save}" value="Cancel" >
+				<f:ajax render="frmGame"></f:ajax>
+		</h:commandButton>
+		
+		<h:dataTable value="#{gameController.games}" 
+			var="g" id="dtGame">
+			<h:column>
+			<f:facet name="header">ID</f:facet>
+				#{g.id}
+			</h:column>
+			<h:column>
+			<f:facet name="header">Name</f:facet>
+				#{g.name}
+			</h:column>
+			<h:column>
+			<f:facet name="header">Cost</f:facet>
+				#{g.cost}
+			</h:column>
+			<h:column>
+			<f:facet name="header">Platform</f:facet>
+				#{g.platform}
+			</h:column>
+			<h:column>
+				<f:facet name="header">Actions</f:facet>
+				<h:commandButton
+					action="#{gameController.delete(g)}"
+					value="Delete"
+					onclick="return window.confirm
+						('Are you sure?')">
+						<f:ajax render="frmGame:dtGame" />
+					</h:commandButton>
+					<h:commandButton
+						action="#{gameController.update(g)}"
+						value="Update">
+						<f:ajax render="frmGame" />
+					</h:commandButton>
+			</h:column>
+			
+		</h:dataTable>
+	</h:form>
+	
+</body> 
+</html>
